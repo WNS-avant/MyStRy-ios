@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard | Story Slots</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Quantico:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* Input elements */
+input, textarea, .form-control, .neon-input, .neon-search, .glass-input {
+  font-family: 'Quantico', sans-serif;
+}
+
+/* Display elements */
+h1, h5, p, label, button, .form-check-label, .modal-title, .neon-text, .neon-label, .btn, .btn-neon, .text-accent {
+  font-family: 'Orbitron', sans-serif;
+}
+    body {
+      background-color: #121212;
+      color: #f8f9fa;
+      padding: 2rem;
+      padding-top: 80px;
+    }
+    .card {
+      color: white;
+      background-color: #1e1e1e;
+      border: 1px solid #2a2a2a;
+    }
+    
+    .form-control, .btn {
+      border-radius: 0.5rem;
+    }
+    .slot-card img {
+      max-height: 200px;
+      object-fit: cover;
+    }
+    
+    /* Hover for private (outlined grey) */
+    .btn-outline-secondary.visibility-btn:hover {
+      background-color: #0d6efd !important;
+      color: #fff !important;
+      border-color: #0d6efd !important;
+    }
+
+    /* Hover for public (solid blue) - optional override */
+    .btn-primary.visibility-btn:hover {
+      background-color: #084298 !important;
+      border-color: #084298 !important;
+    }
+    
+    #view {
+      padding: 10px;
+    }
+    
+    .custom-collapse {
+      overflow: hidden;
+      height: 0;
+      opacity: 0;
+      transition: height 0.4s ease, opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .custom-collapse.open {
+      pointer-events: auto;
+      opacity: 1;
+    }
+
+   .neon-form {
+  background: rgba(20, 20, 20, 0.6);
+  border: 1px solid rgba(0, 255, 238, 0.08);
+  backdrop-filter: blur(3px);
+  box-shadow: 0 0 20px rgba(0, 255, 238, 0.05);
+  border-radius: 1rem;
+  transition: all 0.3s ease-in-out;
+}
+
+    .neon-label {
+      color: #00ffee;
+      min-width: 120px;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    .neon-input {
+      background-color: #1c1c1c;
+      color: #ffffff;
+      border: 1px solid #00ffee44;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.9rem;
+    }
+
+    .neon-input:focus {
+      border-color: #00ffee;
+      box-shadow: 0 0 10px #00ffee88;
+      background-color: #101010;
+      color: #ffffff;
+    }
+
+    .btn-neon {
+      background-color: transparent;
+      border: 2px solid #00ffee;
+      color: #00ffee;
+      font-weight: bold;
+      text-transform: uppercase;
+      transition: all 0.3s ease-in-out;
+      border-radius: 8px;
+    }
+
+    .btn-neon:hover {
+      background-color: #00ffee;
+      color: #0f0f0f;
+      box-shadow: 0 0 10px #00ffeeaa, 0 0 40px #00ffee55;
+    }
+
+    .text-accent {
+      color: #00ffee;
+    }
+
+    .form-line {
+      gap: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .form-line {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .neon-label {
+        margin-bottom: 4px;
+      }
+    }
+
+    /* Consistent card styling */
+    #view .card {
+      background-color: #1a1a1a;
+      border: 1px solid #2c2c2c;
+      border-radius: 0.75rem;
+      color: #f1f1f1;
+    }
+
+    /* Button */
+    #view .btn-outline-info {
+      border-radius: 0.5rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+    
+    #slotWrapper.collapse:not(.show) {
+      opacity: 0;
+      transition: opacity 0.3s ease-out;
+    }
+    #slotWrapper.collapse.show {
+      opacity: 1;
+      transition: opacity 0.5s ease-in;
+    }
+    
+    .neon-search {
+      background: linear-gradient(135deg, #1a1a1a, #111111);
+      color: #ffffff;
+      border: 1px solid #00ffee55;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 6px rgba(0, 255, 238, 0.1);
+    }
+
+    .neon-search::placeholder {
+      color: #88ffff;
+      font-style: italic;
+      opacity: 0.6;
+    }
+
+    .neon-search:focus {
+      background-color: #0d0d0d;
+      border-color: #00ffee;
+      box-shadow: 0 0 10px #00ffee99, 0 0 25px #00ffee44;
+      outline: none;
+      color: snow;
+    }
+
+    .modal-body {
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+    
+    .slot-card {
+      background: linear-gradient(145deg, #1a1a1a, #101010);
+      border: 1px solid #2a2a2a;
+      border-radius: 1rem;
+      box-shadow:
+        0 2px 6px rgba(0, 255, 238, 0.07),
+        0 4px 14px rgba(0, 255, 238, 0.1),
+        inset 0 0 10px rgba(0, 255, 238, 0.03);
+      transform-style: preserve-3d;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      backdrop-filter: blur(2px);
+    }
+
+    .slot-card:hover {
+      transform: translateY(-6px) scale(1.015);
+      box-shadow:
+        0 8px 24px rgba(0, 255, 238, 0.15),
+        inset 0 0 12px rgba(0, 255, 238, 0.05);
+    }
+
+    .slot-card img {
+      border-radius: 0.75rem;
+      box-shadow: 0 3px 10px rgba(0, 255, 238, 0.06);
+    }
+
+    .slot-card h5,
+    .slot-card p {
+      text-shadow: 0 0 3px rgba(0, 255, 238, 0.2);
+      color: #dff;
+    }
+    
+    #allSlots > .col {
+      border-top: 1px solid rgba(0, 255, 238, 0.05);
+    }
+    
+    .glass-panel {
+      background: rgba(18, 18, 18, 0.4);
+      border: 1px solid rgba(0, 255, 238, 0.07);
+      border-radius: 1.25rem;
+      backdrop-filter: blur(15px);
+      box-shadow:
+        0 4px 16px rgba(0, 255, 238, 0.05),
+        inset 0 0 8px rgba(0, 255, 238, 0.03);
+      padding: 1rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .glass-panel:hover {
+      transform: translateY(-4px);
+      box-shadow:
+        0 6px 20px rgba(0, 255, 238, 0.1),
+        inset 0 0 10px rgba(0, 255, 238, 0.05);
+    }
+    
+    .modal-content.glass-modal {
+      background: rgba(20, 20, 20, 0.6);
+      border: 1px solid rgba(0, 255, 238, 0.08);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(0, 255, 238, 0.05);
+      border-radius: 1rem;
+      color: #f0f0f0;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+      background: transparent;
+      border: none;
+    }
+
+    .modal-title {
+      color: #00ffee;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-close {
+      filter: invert(1);
+    }
+
+    .glass-input {
+      background-color: rgba(30, 30, 30, 0.6);
+      color: #fff;
+      border: 1px solid rgba(0, 255, 238, 0.2);
+      border-radius: 8px;
+    }
+
+    .glass-input:focus {
+      background-color: rgba(20, 20, 20, 0.9);
+      box-shadow: 0 0 8px #00ffee66;
+      border-color: #00ffee;
+      color: snow;
+    }
+    
+    /* Fixed glassy header */
+    .glass-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1040;
+      background: rgba(15, 15, 15, 0.6);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 20px rgba(0, 255, 238, 0.1);
+    }
+
+    /* Logo styling */
+    .logo-img {
+      height: 40px;
+      width: auto;
+      border-radius: 6px;
+      box-shadow: 0 0 10px rgba(0, 255, 238, 0.3);
+    }
+
+    /* Neon text */
+    .neon-text {
+      color: #00ffee;
+      font-weight: bold;
+      letter-spacing: 4px;
+      font-size: 1.5rem;
+    }
+    
+    .neon-checkbox .form-check-input {
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid #0ff;
+      box-shadow: 0 0 5px #0ff88f;
+      transition: all 0.2s ease;
+      width: 1.2em;
+      height: 1.2em;
+      margin-top: 0.3em;
+    }
+
+    .neon-checkbox .form-check-input:checked {
+      background-color: #0ff;
+      box-shadow: 0 0 10px #0ff, inset 0 0 5px #000;
+    }
+
+    .neon-checkbox .form-check-label {
+      color: #ccc;
+      font-weight: 500;
+      margin-left: 0.5em;
+      text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+    }
+
+    .neon-checkbox .form-check-input:focus {
+      box-shadow: 0 0 10px #0ff88f;
+      outline: none;
+    }
+
+    .neon-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      user-select: none;
+    }
+    
+    .neon-preview-panel {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.2), inset 0 0 5px rgba(0, 255, 255, 0.1);
+      color: #eee;
+      animation: fadeInPanel 0.5s ease;
+      transition: opacity 0.5s ease;
+    }
+    
+    @keyframes fadeInPanel {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cosmic background */
+    .nebula {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(
+        circle at 30% 20%,
+        rgba(0, 255, 204, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 70% 80%,
+        rgba(255, 51, 153, 0.1) 0%,
+        transparent 50%
+      );
+      z-index: -2;
+      opacity: 0.4;
+    }
+
+    .star-field {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .star {
+      position: absolute;
+      background: #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+      animation: twinkle linear infinite;
+    }
+
+    .star:nth-child(3n) {
+      width: 2px;
+      height: 2px;
+      animation-duration: 3s;
+    }
+    .star:nth-child(3n+1) {
+      width: 3px;
+      height: 3px;
+      animation-duration: 5s;
+    }
+    .star:nth-child(3n+2) {
+      width: 1px;
+      height: 1px;
+      animation-duration: 4s;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+    
+  #slotbg {
+  background: rgba(18, 18, 18, 0.4); /* transparent dark */
+  backdrop-filter: blur(3px);
+ 
+}
+
+
+  </style>
+</head>
+<body>
+<!-- Cosmic background layers -->
+<div class="nebula"></div>
+<div class="star-field" id="starField"></div>
+
+<header class="glass-header d-flex align-items-center justify-content-between px-4 py-2">
+  <div class="d-flex align-items-center gap-3">
+    <img src="/icon.png" alt="WNS Logo" class="logo-img" />
+    <h1 class="mb-0 neon-text">W N S</h1>
+  </div>
+  <button onclick="history.back()" class="btn btn-neon">
+    <i class="bi bi-arrow-left-circle me-2"></i> Go Back
+  </button>
+</header>
+
+
+<div class="container">
+  <!-- Compact Upload Form -->
+  <div class="card p-4 shadow-lg border-0 neon-form">
+    <form id="uploadForm" method="post" enctype="multipart/form-data">
+      <div class="form-check neon-checkbox mb-3">
+        <input class="form-check-input" type="checkbox" value="true" id="isPublic" name="isPublic">
+        <label class="form-check-label" for="isPublic">
+          Make this Chronicle public ?
+        </label>
+      </div>
+      
+      <div class="form-line d-flex align-items-center mb-3">
+        <label for="title" class="form-label neon-label flex-shrink-0 me-3">Title</label>
+        <input type="text" class="form-control neon-input flex-grow-1" id="title" name="title" required />
+      </div>
+
+      <div class="form-line d-flex align-items-center mb-3">
+        <label for="genre" class="form-label neon-label flex-shrink-0 me-3">Genre</label>
+        <input type="text" class="form-control neon-input flex-grow-1" id="genre" name="genre" required />
+      </div>
+
+      <div class="form-line d-flex align-items-center mb-3">
+        <label for="subgenres" class="form-label neon-label flex-shrink-0 me-3">Sub-Genres</label>
+        <input type="text" class="form-control neon-input flex-grow-1" id="subgenres" name="subgenres" placeholder="e.g. Thriller, Drama" />
+      </div>
+
+      <div class="form-line d-flex flex-column mb-3">
+        <label for="desc" class="form-label neon-label mb-2">Description</label>
+        <textarea class="form-control neon-input" id="desc" name="desc" rows="4" placeholder="Brief story summary..." required></textarea>
+      </div>
+
+      <div class="form-line d-flex align-items-center mb-3">
+        <label for="pdf" class="form-label neon-label flex-shrink-0 me-3">Upload PDF</label>
+        <input type="file" class="form-control neon-input flex-grow-1" id="pdf" name="pdf" accept=".pdf" required />
+      </div>
+
+      <div class="form-line d-flex align-items-center mb-4">
+        <label for="image" class="form-label neon-label flex-shrink-0 me-3">Cover Image</label>
+        <input type="file" class="form-control neon-input flex-grow-1" id="image" name="image" accept="image/*" required />
+      </div>
+
+      <button type="submit" class="btn btn-neon w-100"> Stream Chronicle</button>
+    </form>
+  </div>
+
+  <div id="uploadStatus" class="mt-4"></div>
+  <div id="lastUploadPreview" class="mt-4"></div>
+
+  <div class="mb-4">
+    <input type="text" class="form-control neon-search" placeholder="Search..." oninput="filterSlots(this.value)" />
+  </div>
+
+  <!-- View All -->
+  <div class="mt-5" id="view">
+<div id="slotbg" class="card p-4 shadow-lg border bg-dark border-secondary-subtle">
+      <button class="btn btn-neon w-100 mb-2" data-bs-toggle="collapse" data-bs-target="#slotWrapper">
+        Transmitted Chronicles
+      </button>
+      <div id="slotWrapper" class="collapse mt-3">
+        <div id="allSlots" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content glass-modal text-light">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel"> Edit Slot</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="editForm" enctype="multipart/form-data">
+          <div class="modal-body">
+            <input type="hidden" id="editId" />
+            <div class="mb-3">
+              <label for="editTitle" class="form-label text-accent">Title</label>
+              <input type="text" class="form-control glass-input" id="editTitle" name="title" required />
+            </div>
+            <div class="mb-3">
+              <label for="editGenre" class="form-label text-accent">Genre</label>
+              <input type="text" class="form-control glass-input" id="editGenre" name="genre" />
+            </div>
+            <div class="mb-3">
+              <label for="editSubgenres" class="form-label text-accent">Sub-Genres</label>
+              <input type="text" class="form-control glass-input" id="editSubgenres" name="subgenres" />
+            </div>
+            <div class="mb-3">
+              <label for="editDesc" class="form-label text-accent">Description</label>
+              <textarea class="form-control glass-input" id="editDesc" name="desc" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="editPdf" class="form-label text-accent">Replace PDF (optional)</label>
+              <input type="file" class="form-control glass-input" id="editPdf" name="pdf" accept=".pdf" />
+            </div>
+            <div class="mb-3">
+              <label for="editImage" class="form-label text-accent">Replace Image (optional)</label>
+              <input type="file" class="form-control glass-input" id="editImage" name="image" accept="image/*" />
+            </div>
+          </div>
+          <div class="modal-footer border-0">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-neon"> Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content glass-modal text-light">
+        <div class="modal-header border-0">
+          <h5 class="modal-title text-danger">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> Confirm Deletion
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="mb-0">Are you sure you want to delete this story? This action cannot be undone.</p>
+          <input type="hidden" id="deleteId" />
+        </div>
+        <div class="modal-footer border-0">
+          <button class="btn btn-outline-light" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn btn-danger" onclick="confirmDelete()"> Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const slotMap = {};
+
+  const statusDiv = document.getElementById("uploadStatus");
+  const lastPreview = document.getElementById("lastUploadPreview");
+  const allSlots = document.getElementById("allSlots");
+
+  // Upload logic
+  document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+    formData.append("isPublic", document.getElementById("isPublic").checked);
+
+    try {
+      const res = await fetch("/admin/upload", {
+        method: "POST",
+        body: formData
+      });
+      const contentType = res.headers.get("content-type");
+      const isJson = contentType && contentType.includes("application/json");
+      const data = isJson ? await res.json() : await res.text();
+
+      if (res.ok) {
+        statusDiv.innerHTML = `<div class="alert alert-success"> Chronicle uploaded successfully!</div>`;
+        form.reset();
+        lastPreview.innerHTML = createSlotCard(data, false);
+        // Auto-hide after 10s
+        setTimeout(() => lastPreview.innerHTML = "", 10000);
+        loadAllSlots(); // refresh full list
+      } else {
+        const errorMessage = isJson ? (data.message || "Upload failed.") : data;
+        statusDiv.innerHTML = `<div class="alert alert-danger">❌ ${errorMessage}</div>`;
+      }
+    } catch (err) {
+      statusDiv.innerHTML = `<div class="alert alert-danger">❌ ${err.message}</div>`;
+    }
+  });
+
+  // Load All Slots
+  async function loadAllSlots() {
+    allSlots.innerHTML = `<p class="text-info">Loading...</p>`;
+    try {
+      const res = await fetch("/api/stories");
+      const data = await res.json();
+      const stories = Array.isArray(data) ? data : data.content;
+
+      if (!stories || stories.length === 0) {
+        allSlots.innerHTML = `<p class="text-muted">No Chronicles drafted yet.</p>`;
+        return;
+      }
+
+      allSlots.innerHTML = stories.map(slot => {
+        slotMap[slot.id] = slot;
+        return `<div class="col">${createSlotCard(slot, true)}</div>`;
+      }).join("");
+    } catch (err) {
+      allSlots.innerHTML = `<div class="alert alert-danger">⚠️ Failed to load Chronicles: ${err.message}</div>`;
+    }
+  }
+
+  // Create Card
+  function createSlotCard(slot, includeButtons) {
+    return `
+      <div class="glass-panel">
+        <div class="card h-100 p-3 slot-card shadow-sm">
+          <img src="${slot.imagePath}" class="img-fluid rounded mb-2" alt="${slot.title}" />
+          <h5 class="mb-1">${slot.title}</h5>
+          <p class="small" style="color:#cccccc;">Uploaded: ${new Date(slot.uploadedAt).toLocaleString()}</p>
+          <div class="d-flex flex-wrap gap-2 mt-2 justify-content-between">
+            <a href="${slot.pdfPath}" target="_blank" class="btn btn-sm btn-outline-light flex-fill text-center"
+               onclick="recordRead(${slot.id})">
+              <i class="bi bi-book"></i>
+              <span class="badge bg-secondary ms-1" id="read-${slot.id}">${slot.readCount || 0}</span>
+            </a>
+            <a href="${slot.pdfPath}" download class="btn btn-sm btn-outline-success flex-fill text-center"
+               onclick="recordDownload(${slot.id})">
+              <i class="bi bi-download"></i>
+              <span class="badge bg-secondary ms-1" id="download-${slot.id}">${slot.downloadCount || 0}</span>
+            </a>
+            ${includeButtons ? `
+              <button class="btn btn-sm btn-warning flex-fill text-center" onclick="openEditModal(${slot.id}, '${slot.title.replace(/'/g, "\\'")}')">
+                <i class="bi bi-pencil-square"></i>
+              </button>
+              <button class="btn btn-sm btn-danger flex-fill text-center" onclick="openDeleteModal(${slot.id})">
+                <i class="bi bi-trash"></i>
+              </button>
+              <button class="btn btn-sm ${slot.public ? 'btn-primary' : 'btn-outline-secondary'} flex-fill text-center visibility-btn"
+                  onclick="toggleVisibility(${slot.id})"
+                  title="${slot.public ? 'Public' : 'Private'}">
+                <i class="bi ${slot.public ? 'bi-globe' : 'bi-lock-fill'}"></i>
+              </button>
+            ` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  async function toggleVisibility(id) {
+    try {
+      const res = await fetch(`/admin/toggle-visibility/${id}`, {
+        method: "PUT"
+      });
+      if (res.ok) {
+        loadAllSlots(); // Refresh the slot list
+      } else {
+        alert("❌ Failed to toggle visibility");
+      }
+    } catch (err) {
+      alert("⚠️ Error: " + err.message);
+    }
+  }
+
+  // Edit Slot Modal
+  function openEditModal(id) {
+    const slot = slotMap[id];
+    if (!slot) return alert("⚠️ Could not load story details.");
+    document.getElementById("editId").value = id;
+    document.getElementById("editTitle").value = slot.title || "";
+    document.getElementById("editDesc").value = slot.desc || "";
+    document.getElementById("editGenre").value = slot.genre || "";
+    document.getElementById("editSubgenres").value = slot.subgenres || "";
+    new bootstrap.Modal(document.getElementById("editModal")).show();
+  }
+
+  document.getElementById("editForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const id = document.getElementById("editId").value;
+    const formData = new FormData(form);
+    try {
+      const res = await fetch(`/admin/edit/${id}`, {
+        method: "POST",
+        body: formData
+      });
+      if (res.ok) {
+        statusDiv.innerHTML = `<div class="alert alert-success"> Chronicle amended successfully!</div>`;
+        const editModal = bootstrap.Modal.getInstance(document.getElementById("editModal"));
+        if (editModal) editModal.hide();
+        loadAllSlots();
+      } else {
+        alert("❌ Edit failed.");
+      }
+    } catch (err) {
+      alert("⚠️ Error: " + err.message);
+    }
+  });
+
+  // Delete Slot Modal
+  function openDeleteModal(id) {
+    document.getElementById("deleteId").value = id;
+    new bootstrap.Modal(document.getElementById("deleteModal")).show();
+  }
+
+  async function confirmDelete() {
+    const id = document.getElementById("deleteId").value;
+    try {
+      const res = await fetch(`/admin/delete/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        statusDiv.innerHTML = `<div class="alert alert-success"> Chronicle detached successfully!</div>`;
+        const deleteModal = bootstrap.Modal.getInstance(document.getElementById("deleteModal"));
+        if (deleteModal) deleteModal.hide();
+        loadAllSlots();
+      } else {
+        alert("❌ Delete failed.");
+      }
+    } catch (err) {
+      alert("⚠️ Error: " + err.message);
+    }
+  }
+
+  // Filter/Search Logic
+  function filterSlots(query) {
+    const cards = document.querySelectorAll('#allSlots .card');
+    query = query.toLowerCase();
+    cards.forEach(card => {
+      const title = card.querySelector('h5').textContent.toLowerCase();
+      card.parentElement.style.display = title.includes(query) ? '' : 'none';
+    });
+  }
+
+  let slotsLoaded = false;
+  document.getElementById("slotWrapper").addEventListener("shown.bs.collapse", () => {
+    if (!slotsLoaded) {
+      loadAllSlots();
+      slotsLoaded = true;
+    }
+  });
+
+  function recordRead(id) {
+    fetch(`/admin/increment-read/${id}`, { method: 'PUT' })
+      .then(res => {
+        if (res.ok) {
+          const readBadge = document.getElementById(`read-${id}`);
+          if (readBadge) {
+            readBadge.textContent = parseInt(readBadge.textContent) + 1;
+          }
+        }
+      })
+      .catch(err => console.error("Failed to update read count:", err));
+  }
+
+  function recordDownload(id) {
+    fetch(`/admin/increment-download/${id}`, { method: 'PUT' })
+      .then(res => {
+        if (res.ok) {
+          const downloadBadge = document.getElementById(`download-${id}`);
+          if (downloadBadge) {
+            downloadBadge.textContent = parseInt(downloadBadge.textContent) + 1;
+          }
+        }
+      })
+      .catch(err => console.error("Failed to update download count:", err));
+  }
+
+  // Generate stars dynamically
+  function createStars() {
+    const starField = document.getElementById('starField');
+    const numStars = 200; // Number of stars
+    for (let i = 0; i < numStars; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.animationDelay = `${Math.random() * 5}s`;
+      starField.appendChild(star);
+    }
+  }
+
+  // Call the function to create stars when the page loads
+  window.onload = createStars;
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
