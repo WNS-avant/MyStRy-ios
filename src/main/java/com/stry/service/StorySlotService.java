@@ -19,6 +19,8 @@ public interface StorySlotService {
 	boolean toggleVisibility(Long id);
 	void incrementReadCount(Long id);
 	void incrementDownloadCount(Long id);
+	void resetReadCount(Long id);
+	void resetDownloadCount(Long id);
 
 }
 
