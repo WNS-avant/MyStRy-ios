@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Pageable;      // ✅ Correct
+import org.springframework.data.domain.Pageable;      
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -121,6 +121,23 @@ public class StorySlotServiceImpl implements StorySlotService{
 	            return true;
 	        }
 	        return false;
+	    }
+	    
+	    
+	    @Override
+	    public void resetReadCount(Long id) {
+	        StorySlot story = storyRepo.findById(id)
+	            .orElseThrow(() -> new RuntimeException("Story not found with ID: " + id));
+	        story.setReadCount(0);
+	        storyRepo.save(story);
+	    }
+
+	    @Override
+	    public void resetDownloadCount(Long id) {
+	        StorySlot story = storyRepo.findById(id)
+	            .orElseThrow(() -> new RuntimeException("Story not found with ID: " + id));
+	        story.setDownloadCount(0);
+	        storyRepo.save(story);
 	    }
 
 	    @Override
