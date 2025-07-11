@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <title>MySt.Ry by WNS</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-	<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <title>MySt.Ry | Dashboard</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" >
+    <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" >
+	
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@300;400&display=swap" rel="stylesheet"/>
@@ -641,79 +641,103 @@
   margin-top: 1.5rem;
   margin-bottom: 0.5rem;
 }
-@media (max-width: 768px) {
+
+ @media (max-width: 768px) {
+ 
+  h1 {
+    font-size: 1.8rem; 
+    letter-spacing: 0.2rem;
+  }
   .row {
-    flex-direction: column !important;
-    align-items: center !important;
+    flex-direction: column;
+    align-items: center;
   }
 
   .col-md-4 {
-    flex: 0 0 100% !important;
-    max-width: 100% !important;
-    padding: 0 10px !important;
-    margin-bottom: 2rem !important;
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding: 0 5px;
+    margin-bottom: 3rem;
   }
 
   .card {
-    width: 100% !important;
-    margin: 0 auto 2rem auto !important;
-    max-width: 95vw;
-    border-radius: 1rem;
+    width: 100%;
+    max-width: 98vw;
+    margin: 0 auto;
     box-shadow: 0 0 15px rgba(0, 230, 230, 0.2);
+    border-radius: 1rem;
+    overflow: visible; /* allow child scrolls */
+    transition: all 0.3s ease-in-out;
+    margin-bottom: 2.5rem;
   }
 
-  .glass-panel, .front, .back {
-    height: auto !important;
-    min-height: 0 !important;
+  .glass-panel {
+    transform: none !important;
+    perspective: none !important;
+    transition: none;
   }
 
-  .card-img-top {
-    max-height: 180px;
-    object-fit: cover;
-    border-radius: 0.75rem;
+  .front, .back {
+    position: static;
+    transform: none !important;
+    backface-visibility: visible;
+    background: rgba(20, 30, 40, 0.85);
+    border-radius: 12px;
+    padding: 1rem;
   }
 
-  .story-title {
-    font-size: 1rem !important;
+  .back {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.4s ease;
   }
 
-  .btn {
-    font-size: 0.8rem !important;
-    padding: 0.4rem 0.8rem !important;
-    margin-bottom: 0.4rem;
-    white-space: nowrap;
+  .glass-panel.revealed .back {
+    max-height: 60vh; /* enough space for content */
+    overflow-y: auto;
+    opacity: 1;
+    margin-top: 0.75rem;
+    border-top: 1px solid rgba(0, 230, 230, 0.2);
+  }
+  
+ 
+  .glass-panel.revealed .front {
+    display: none;
+  }
+
+  .back::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .back::-webkit-scrollbar-thumb {
+    background: rgba(0, 230, 230, 0.4);
+    border-radius: 4px;
   }
 
   .btn-toggle-details {
     display: block;
     width: 100%;
-    font-size: 0.8rem;
-    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    margin-top: 0.75rem;
+    padding: 0.5rem 1rem;
   }
 
   .d-flex.gap-2 {
-    flex-direction: column;
+    flex-direction: column !important;
     gap: 0.5rem !important;
   }
 
   .story-details {
     font-size: 0.85rem;
-    padding: 0.5rem 0.5rem;
   }
 
   .story-details h6 {
     font-size: 0.75rem;
-    padding: 3px 8px;
   }
 
   .story-details p {
     font-size: 0.85rem;
-  }
-
-  footer {
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.5rem 0;
   }
 
   .footer-decoration {
@@ -725,6 +749,7 @@
     height: 40px;
   }
 }
+
 
 
     </style>
@@ -904,6 +929,8 @@
             slot.style.transform = 'none'; // Reset transforms
         });
     });
+  
+
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
