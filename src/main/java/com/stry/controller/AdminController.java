@@ -134,7 +134,19 @@ public class AdminController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/reset-read/{id}")
+    @ResponseBody
+    public String resetReadCount(@PathVariable Long id) {
+        storyService.resetReadCount(id);
+        return "OK";
+    }
 
-
+    @PostMapping("/reset-download/{id}")
+    @ResponseBody
+    public String resetDownloadCount(@PathVariable Long id) {
+        storyService.resetDownloadCount(id);
+        return "OK";
+    }
+   
 
 }
