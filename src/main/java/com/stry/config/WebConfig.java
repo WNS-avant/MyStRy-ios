@@ -14,12 +14,16 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${upload.path.image}")
     private String imageUploadPath;
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/files/pdf/**")
-                .addResourceLocations("file:" + pdfUploadPath + "/");
+  @Override
+public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    String pdfAbsolutePath = Paths.get(pdfUploadPath).toAbsolutePath().toUri().toString();
+    String imageAbsolutePath = Paths.get(imageUploadPath).toAbsolutePath().toUri().toString();
 
-        registry.addResourceHandler("/files/images/**")
-                .addResourceLocations("file:" + imageUploadPath + "/");
-    }
+    registry.addResourceHandler("/files/pdf/**")
+            .addResourceLocations(pdfAbsolutePath);
+
+    registry.addResourceHandler("/files/images/**")
+            .addResourceLocations(imageAbsolutePath);
+}
+
 }
